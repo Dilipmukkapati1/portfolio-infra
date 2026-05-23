@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        if: github.event_name != 'pull_request'
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Validate Bicep
+        run: az bicep build --file infra/azure/serverless/main.bicep
+      - name: What-if (optional)
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          az deployment group what-if \
+            -g rg-portfolio-dev \
+            -f infra/azure/serverless/main.bicep \
+            -p environmentName=dev ownerEmail=${{ vars.OWNER_EMAIL }} \
+            || echo "Resource group may not exist yet"
+
+  deploy-dev:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Deploy
+        run: |
+          az group create -n rg-portfolio-dev -l eastus2 --output none
+          az deployment group create \
+            -g rg-portfolio-dev \
+            -f infra/azure/serverless/main.bicep \
+            -p environmentName=dev ownerEmail=${{ vars.OWNER_EMAIL }}

@@ -1,35 +1,59 @@
 # portfolio-infra
 
-Azure Bicep for the personal portfolio platform (serverless stack).
+Terraform for the personal portfolio platform on Azure.
+
+## Subscription and region
+
+- Subscription: **personal-portfolio-management**
+- Region: **centralus**
+- Resource group: **rg-portfolio** (dev + prod logical environments by naming)
 
 ## Structure
 
 ```
-infra/azure/serverless/
-  main.bicep          # Orchestration
-  keyvault.bicep
-  cosmos.bicep
-  storage.bicep
-  functionapp.bicep
-  staticwebapp.bicep
-  appinsights.bicep
-  batch.bicep         # Phase 2+ pool autoscale 0
-scripts/
-  seed-simplefin-secret.sh
+terraform/
+  bootstrap/           # one-time remote state backend
+  modules/             # cosmos, sql, storage, keyvault, monitoring, env_stack
+  main.tf              # root module
 docs/
-  keyvault-secrets.md
+  terraform.md         # local workflow (bootstrap, plan, apply)
+  keyvault-secrets.md  # secret naming and seeding
+Makefile
 ```
 
-## Deploy (dev)
+## Quick start
 
 ```bash
-az group create -n rg-portfolio-dev -l eastus2
-az deployment group create \
-  -g rg-portfolio-dev \
-  -f infra/azure/serverless/main.bicep \
-  -p environmentName=dev ownerEmail=you@example.com
+az account set --subscription "personal-portfolio-management"
+
+cp terraform/bootstrap/terraform.tfvars.example terraform/bootstrap/terraform.tfvars
+# Set subscription_id, then:
+make bootstrap
+
+# Configure backend.hcl from bootstrap output (see docs/terraform.md)
+
+cp terraform/terraform.tfvars.example terraform/terraform.tfvars
+# Set subscription_id and owner_email
+
+make init
+make plan-dev
+make apply-dev
 ```
 
-## Seed SimpleFIN Access URL
+Prod promotion: `CONFIRM_PROD=1 make apply-prod` (see [docs/terraform.md](./docs/terraform.md)).
 
-See [docs/keyvault-secrets.md](./docs/keyvault-secrets.md) and `scripts/seed-simplefin-secret.sh`.
+## Downstream repos
+
+After apply, set GitHub vars from `make outputs`:
+
+| Repo | Variable | Source output |
+|------|----------|---------------|
+| portfolio-api | `FUNCTION_APP_NAME` (dev env) | `dev_function_app_name` |
+| portfolio-api | `FUNCTION_APP_NAME` (prod env) | `prod_function_app_name` |
+| portfolio-web | SWA deploy token | Azure portal / `az staticwebapp secrets list` |
+
+**No changes** to `portfolio-api/src/cosmos/**` — Cosmos is configured via Function App settings only.
+
+## Legacy
+
+Bicep under `infra/azure/serverless/` was removed in favor of Terraform.

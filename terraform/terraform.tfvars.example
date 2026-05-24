@@ -1,0 +1,24 @@
+# Copy to terraform.tfvars (gitignored) and set values.
+#
+# subscription_id:
+#   az account show --subscription "personal-portfolio-management" --query id -o tsv
+
+subscription_id = "00000000-0000-0000-0000-000000000000"
+location        = "centralus"
+owner_email     = "you@example.com"
+name_prefix     = "ppm"
+
+environments = ["dev", "prod"]
+
+keyvault_enable_purge_protection = true
+
+cosmos_enable_free_tier = true
+sql_use_free_offer      = true
+
+static_web_app_sku_tier = "Free"
+static_web_app_sku_size = "Free"
+
+enable_cost_budget = true
+cost_budget_amount = 1
+
+# cost_budget_emails = ["you@example.com"]

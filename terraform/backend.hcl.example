@@ -1,0 +1,8 @@
+# Copy to backend.hcl after running `make bootstrap` and fill storage_account_name from bootstrap output.
+#
+#   cd terraform/bootstrap && terraform output -raw storage_account_name
+
+resource_group_name  = "rg-portfolio-tfstate"
+storage_account_name = "ppmterraformXXXX"
+container_name       = "tfstate"
+key                  = "portfolio.tfstate"

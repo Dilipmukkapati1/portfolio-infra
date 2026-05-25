@@ -1,4 +1,4 @@
-.PHONY: bootstrap init fmt validate plan plan-dev apply-dev plan-prod apply-prod apply outputs
+.PHONY: bootstrap init fmt validate plan plan-dev apply-dev plan-prod apply-prod apply outputs seed-dev-sql
 
 TF_DIR := terraform
 BACKEND_CONFIG ?= backend.hcl
@@ -51,3 +51,6 @@ apply: init
 
 outputs:
 	cd $(TF_DIR) && terraform output
+
+seed-dev-sql:
+	@bash scripts/seed-sql-secret.sh

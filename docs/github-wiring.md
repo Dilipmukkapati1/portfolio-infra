@@ -37,3 +37,13 @@ az staticwebapp secrets list \
 ```
 
 Set per-environment secrets in GitHub when using environment-scoped deploys (`environment: dev` / `environment: prod` in the workflow).
+
+## portfolio-api — Liquibase CI secret
+
+Build `AZURE_SQL_LIQUIBASE_JDBC_URL` for GitHub Actions deploy:
+
+```
+jdbc:sqlserver://<sql_server_fqdn>:1433;databaseName=sqldb-dev;encrypt=true;trustServerCertificate=false
+```
+
+Username/password: `terraform output -raw sql_admin_login` / `sql_admin_password` (after `make apply-dev`).

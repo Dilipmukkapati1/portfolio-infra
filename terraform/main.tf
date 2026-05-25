@@ -37,6 +37,8 @@ module "sql_shared" {
   max_size_gb                    = var.sql_max_size_gb
   use_free_offer                 = var.sql_use_free_offer
   free_limit_exhaustion_behavior = "AutoPause"
+  allow_current_client_ip        = var.sql_allow_current_client_ip
+  additional_client_ips          = var.sql_additional_client_ips
   tags                           = local.common_tags
 }
 

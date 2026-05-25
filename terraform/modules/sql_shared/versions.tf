@@ -8,5 +8,9 @@ terraform {
       source  = "Azure/azapi"
       version = "~> 2.0"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.4"
+    }
   }
 }

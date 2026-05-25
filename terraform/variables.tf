@@ -56,6 +56,18 @@ variable "sql_max_size_gb" {
   default     = 32
 }
 
+variable "sql_allow_current_client_ip" {
+  type        = bool
+  description = "Add a SQL firewall rule for the public IP of the machine running terraform apply (enable in terraform.tfvars for local dev)"
+  default     = false
+}
+
+variable "sql_additional_client_ips" {
+  type        = list(string)
+  description = "Additional IPv4 addresses allowed to connect to Azure SQL"
+  default     = []
+}
+
 variable "static_web_app_sku_tier" {
   type        = string
   description = "Static Web App SKU tier"

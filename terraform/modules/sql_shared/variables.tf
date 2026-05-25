@@ -54,6 +54,18 @@ variable "free_limit_exhaustion_behavior" {
   default = "AutoPause"
 }
 
+variable "allow_current_client_ip" {
+  type        = bool
+  description = "At apply time, resolve this machine's public IP (api.ipify.org) and add a SQL firewall rule"
+  default     = false
+}
+
+variable "additional_client_ips" {
+  type        = list(string)
+  description = "Extra IPv4 addresses allowed to connect (e.g. home office, VPN exit)"
+  default     = []
+}
+
 variable "tags" {
   type    = map(string)
   default = {}

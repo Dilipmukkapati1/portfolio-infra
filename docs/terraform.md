@@ -78,6 +78,16 @@ make outputs
 
 Use `dev_function_app_name`, `prod_function_app_name`, SWA hostnames for GitHub Actions vars.
 
+## Azure SQL — client access from your machine
+
+By default only **AllowAzureServices** (`0.0.0.0`) is open. For local `sqlcmd` / Azure Data Studio, enable in `terraform.tfvars`:
+
+```hcl
+sql_allow_current_client_ip = true
+```
+
+`terraform apply` resolves your public IP via [api.ipify.org](https://api.ipify.org) and creates firewall rule **AllowCurrentClient**. Re-apply after your IP changes. Optional static IPs: `sql_additional_client_ips = ["203.0.113.10"]`.
+
 ## Free tier notes
 
 | Service | Config |
@@ -99,3 +109,11 @@ See [keyvault-secrets.md](./keyvault-secrets.md).
 ## Application code
 
 **Do not change** `portfolio-api/src/cosmos/**`. Cosmos connectivity is configured only via Function App settings from Terraform.
+
+### Local portfolio-api bootstrap
+
+```bash
+make apply-dev
+make seed-dev-sql
+cd ../portfolio-api && npm run azure:local && npm run db:migrate
+```

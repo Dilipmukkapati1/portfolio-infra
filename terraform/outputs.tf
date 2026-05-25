@@ -77,3 +77,16 @@ output "dev_function_app_principal_id" {
 output "prod_function_app_principal_id" {
   value = try(module.env_stack["prod"].function_app_principal_id, null)
 }
+
+output "sql_admin_login" {
+  value = module.sql_shared.admin_login
+}
+
+output "sql_admin_password" {
+  value     = random_password.sql_admin.result
+  sensitive = true
+}
+
+output "sql_database_dev" {
+  value = one([for name in local.sql_database_names : name if endswith(name, "-dev")])
+}

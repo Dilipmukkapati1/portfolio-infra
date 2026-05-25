@@ -16,6 +16,38 @@ resource "azurerm_mssql_firewall_rule" "allow_azure" {
   end_ip_address   = "0.0.0.0"
 }
 
+data "http" "current_client_ip" {
+  count = var.allow_current_client_ip ? 1 : 0
+
+  url = "https://api.ipify.org"
+
+  request_headers = {
+    Accept = "text/plain"
+  }
+}
+
+locals {
+  current_client_ip = var.allow_current_client_ip ? chomp(data.http.current_client_ip[0].response_body) : null
+}
+
+resource "azurerm_mssql_firewall_rule" "current_client" {
+  count = var.allow_current_client_ip ? 1 : 0
+
+  name             = "AllowCurrentClient"
+  server_id        = azurerm_mssql_server.this.id
+  start_ip_address = local.current_client_ip
+  end_ip_address   = local.current_client_ip
+}
+
+resource "azurerm_mssql_firewall_rule" "additional_clients" {
+  for_each = toset(var.additional_client_ips)
+
+  name             = "AllowClient-${replace(each.value, ".", "-")}"
+  server_id        = azurerm_mssql_server.this.id
+  start_ip_address = each.value
+  end_ip_address   = each.value
+}
+
 # Azure SQL free offer flags (useFreeLimit) require AzAPI until azurerm exposes them.
 resource "azapi_resource" "databases" {
   for_each = toset(var.database_names)

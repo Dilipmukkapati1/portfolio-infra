@@ -15,6 +15,10 @@ keyvault_enable_purge_protection = true
 cosmos_enable_free_tier = true
 sql_use_free_offer      = true
 
+# Local sqlcmd / Data Studio from your laptop (uses api.ipify.org at apply time)
+sql_allow_current_client_ip = true
+# sql_additional_client_ips = ["203.0.113.10"]
+
 static_web_app_sku_tier = "Free"
 static_web_app_sku_size = "Free"
 

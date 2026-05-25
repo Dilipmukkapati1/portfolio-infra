@@ -54,6 +54,43 @@ After apply, set GitHub vars from `make outputs`:
 
 **No changes** to `portfolio-api/src/cosmos/**` — Cosmos is configured via Function App settings only.
 
+## Local API dev (Cosmos)
+
+Terraform creates account `ppmcosmos*` with databases `portfolio-dev` / `portfolio-prod` and all SQL API containers (partition key `/householdId`).
+
+From `portfolio-api` after `make apply-dev`:
+
+```bash
+npm run cosmos:azure   # COSMOS_ENDPOINT, COSMOS_KEY, COSMOS_DATABASE=portfolio-dev → local.settings.json
+```
+
+The API verifies containers exist in Azure (no emulator or Docker required for local dev).
+
 ## Legacy
 
 Bicep under `infra/azure/serverless/` was removed in favor of Terraform.
+
+## Local API dev (Azure SQL)
+
+Terraform provisions shared server `ppm-sql-*` with database **`sqldb-dev`** (auto-pause enabled on free tier).
+
+In `terraform/terraform.tfvars`:
+
+```hcl
+sql_allow_current_client_ip = true
+```
+
+Re-apply when your public IP changes.
+
+```bash
+make apply-dev
+make seed-dev-sql    # Key Vault: dev-azure-sql-connection-string
+
+cd ../portfolio-api
+npm run azure:local  # or: npm run sql:azure
+npm run db:migrate
+```
+
+Local SQL credentials are written by `npm run sql:azure` from `terraform output` (including sensitive `sql_admin_password`). Key Vault seed is optional for deployed apps.
+
+**Shared database:** `sqldb-dev` is used by all local developers on this stack — coordinate schema migrations.

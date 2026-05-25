@@ -2,7 +2,7 @@
 
 One shared Key Vault in `rg-portfolio`. Secrets are **prefixed by environment** (`dev-` / `prod-`) because dev and prod share the vault.
 
-Terraform grants each Function App managed identity **Key Vault Secrets User** on the vault (RBAC is in code; no manual `az role assignment`).
+Terraform grants each Function App managed identity **Key Vault Secrets Officer** on the vault (read and set secrets; RBAC is in code; no manual `az role assignment`).
 
 ## Secret names
 

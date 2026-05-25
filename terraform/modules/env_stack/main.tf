@@ -77,10 +77,10 @@ resource "azurerm_static_web_app" "this" {
   tags = var.tags
 }
 
-# Key Vault Secrets User
-resource "azurerm_role_assignment" "kv_secrets_user" {
+# Key Vault Secrets Officer (read + set secrets for SimpleFIN connect, SnapTrade, etc.)
+resource "azurerm_role_assignment" "kv_secrets_officer" {
   scope                = var.key_vault_id
-  role_definition_name = "Key Vault Secrets User"
+  role_definition_name = "Key Vault Secrets Officer"
   principal_id         = azurerm_function_app_flex_consumption.this.identity[0].principal_id
 }
 

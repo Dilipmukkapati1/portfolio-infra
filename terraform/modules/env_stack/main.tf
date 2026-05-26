@@ -51,7 +51,15 @@ resource "azurerm_function_app_flex_consumption" "this" {
     type = "SystemAssigned"
   }
 
-  site_config {}
+  site_config {
+    cors {
+      allowed_origins = [
+        "https://${azurerm_static_web_app.this.default_host_name}",
+        "http://localhost:3000",
+      ]
+      support_credentials = false
+    }
+  }
 
   app_settings = {
     AzureWebJobsStorage                   = local.storage_connection_string

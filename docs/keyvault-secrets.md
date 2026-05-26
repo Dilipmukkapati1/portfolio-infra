@@ -17,6 +17,12 @@ Terraform grants each Function App managed identity **Key Vault Secrets Officer*
 | `prod-snaptrade-*` | prod | (mirror dev names with `prod-` prefix) | |
 | `dev-azure-sql-connection-string` | dev | Future SQL features | Azure SQL `sqldb-dev` |
 | `prod-azure-sql-connection-string` | prod | Future SQL features | Azure SQL `sqldb-prod` |
+| `dev-auth-password` | dev | Privacy unlock | Same password users enter for the dev web login |
+| `prod-auth-password` | prod | Privacy unlock | Same password users enter for the prod web login |
+| `dev-auth-secret` | dev | Web/API local fallback | Shared auth secret when dev uses the fallback |
+| `prod-auth-secret` | prod | Web/API local fallback | Shared auth secret when prod uses the fallback |
+| `dev-privacy-jwt-secret` | dev | Privacy unlock | Strong signing secret for `x-privacy-token` JWTs |
+| `prod-privacy-jwt-secret` | prod | Privacy unlock | Strong signing secret for `x-privacy-token` JWTs |
 
 Cosmos uses **RBAC + app settings** (`COSMOS_ENDPOINT`, `COSMOS_DATABASE`); no Cosmos connection string required in Key Vault for the current API.
 
@@ -41,6 +47,23 @@ make seed-dev-sql
 Uses `terraform output` for FQDN, `sql_admin_login`, `sql_admin_password`, and `sql_database_dev`.
 
 **Local API dev** uses `npm run sql:azure` in `portfolio-api` (writes `AZURE_SQL_*` to `local.settings.json`), not Key Vault.
+
+## Seed privacy secrets for dev
+
+Use values from your web auth configuration for `dev-auth-password` and
+`dev-auth-secret`; generate a separate high-entropy `dev-privacy-jwt-secret`.
+
+```bash
+VAULT=$(cd terraform && terraform output -raw key_vault_name)
+
+az keyvault secret set --vault-name "$VAULT" --name dev-auth-password --value "<dev login password>"
+az keyvault secret set --vault-name "$VAULT" --name dev-auth-secret --value "<dev auth secret>"
+az keyvault secret set --vault-name "$VAULT" --name dev-privacy-jwt-secret --value "$(openssl rand -base64 48)"
+```
+
+After updating secrets, apply the dev stack so the Function App settings include
+the Key Vault references, then deploy `portfolio-api` from the shared privacy
+branch.
 
 ## Local development
 

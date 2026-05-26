@@ -62,6 +62,9 @@ resource "azurerm_function_app_flex_consumption" "this" {
     PORTFOLIO_QUEUE_NAME                  = var.queue_name
     AZURE_SQL_DATABASE                    = var.sql_database_name
     APP_ENV                               = var.environment == "prod" ? "production" : "development"
+    AUTH_PASSWORD                         = "@Microsoft.KeyVault(SecretUri=https://${var.key_vault_name}.vault.azure.net/secrets/${var.environment}-auth-password)"
+    AUTH_SECRET                           = "@Microsoft.KeyVault(SecretUri=https://${var.key_vault_name}.vault.azure.net/secrets/${var.environment}-auth-secret)"
+    PRIVACY_JWT_SECRET                    = "@Microsoft.KeyVault(SecretUri=https://${var.key_vault_name}.vault.azure.net/secrets/${var.environment}-privacy-jwt-secret)"
   }
 
   tags = var.tags

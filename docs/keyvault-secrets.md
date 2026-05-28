@@ -15,8 +15,8 @@ Terraform grants each Function App managed identity **Key Vault Secrets Officer*
 | `dev-snaptrade-consumer-key` | dev | SnapTrade | Consumer key |
 | `dev-snaptrade-webhook-secret` | dev | SnapTrade webhook | Signature verification |
 | `prod-snaptrade-*` | prod | (mirror dev names with `prod-` prefix) | |
-| `dev-azure-sql-connection-string` | dev | Future SQL features | Azure SQL `sqldb-dev` |
-| `prod-azure-sql-connection-string` | prod | Future SQL features | Azure SQL `sqldb-prod` |
+| `dev-azure-sql-connection-string` | dev | Function App `AZURE_SQL_CONNECTION_STRING` | Azure SQL `sqldb-dev` (run `make seed-dev-sql` after apply) |
+| `prod-azure-sql-connection-string` | prod | Function App `AZURE_SQL_CONNECTION_STRING` | Azure SQL `sqldb-prod` |
 | `dev-auth-password` | dev | Privacy unlock | Same password users enter for the dev web login |
 | `prod-auth-password` | prod | Privacy unlock | Same password users enter for the prod web login |
 | `dev-auth-secret` | dev | Web/API local fallback | Shared auth secret when dev uses the fallback |

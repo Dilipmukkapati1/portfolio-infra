@@ -102,7 +102,7 @@ sql_allow_current_client_ip = true
 Seed env-prefixed secrets manually or via scripts:
 
 - `dev-simplefin-access-url`, `prod-simplefin-access-url`
-- `dev-azure-sql-connection-string`, `prod-azure-sql-connection-string` (for future SQL features)
+- `dev-azure-sql-connection-string`, `prod-azure-sql-connection-string` (Function App `AZURE_SQL_CONNECTION_STRING`; seed with `make seed-dev-sql`)
 
 See [keyvault-secrets.md](./keyvault-secrets.md).
 

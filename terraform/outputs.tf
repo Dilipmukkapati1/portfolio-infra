@@ -30,6 +30,11 @@ output "storage_account_name" {
   value = module.storage_shared.name
 }
 
+output "storage_connection_string" {
+  value     = module.storage_shared.primary_connection_string
+  sensitive = true
+}
+
 output "key_vault_name" {
   value = module.keyvault_shared.name
 }

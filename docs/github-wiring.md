@@ -26,7 +26,7 @@ Add a `prod` GitHub Environment with the prod function app name when you enable 
 
 | Environment | Secret | SWA name |
 |-------------|--------|----------|
-| dev | `AZURE_STATIC_WEB_APPS_API_TOKEN` | `ppm-dev-web-x32hrp` |
+| dev | `AZURE_STATIC_WEB_APPS_API_TOKEN` | `ppm-dev-web-x32hrp` (resource name; live URL is `terraform output -raw dev_static_web_app_hostname`) |
 | prod | `AZURE_STATIC_WEB_APPS_API_TOKEN` | `ppm-prod-web-x32hrp` |
 
 ```bash

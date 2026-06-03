@@ -60,11 +60,11 @@ resource "azapi_resource" "databases" {
   body = {
     properties = merge(
       {
-        collation    = "SQL_Latin1_General_CP1_CI_AS"
-        maxSizeBytes = var.max_size_gb * 1024 * 1024 * 1024
-        minCapacity  = var.min_capacity
+        collation      = "SQL_Latin1_General_CP1_CI_AS"
+        maxSizeBytes   = var.max_size_gb * 1024 * 1024 * 1024
+        minCapacity    = var.min_capacity
         autoPauseDelay = var.auto_pause_delay_in_minutes
-        readScale    = "Disabled"
+        readScale      = "Disabled"
       },
       var.use_free_offer ? {
         useFreeLimit                = true

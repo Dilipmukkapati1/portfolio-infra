@@ -23,6 +23,8 @@ Terraform grants each Function App managed identity **Key Vault Secrets Officer*
 | `prod-auth-secret` | prod | Web/API local fallback | Shared auth secret when prod uses the fallback |
 | `dev-privacy-jwt-secret` | dev | Privacy unlock | Strong signing secret for `x-privacy-token` JWTs |
 | `prod-privacy-jwt-secret` | prod | Privacy unlock | Strong signing secret for `x-privacy-token` JWTs |
+| `dev-fmp-api-key` | dev | Market data | Financial Modeling Prep API key (`FMP_API_KEY`) |
+| `prod-fmp-api-key` | prod | Market data | Same for prod |
 
 Cosmos uses **RBAC + app settings** (`COSMOS_ENDPOINT`, `COSMOS_DATABASE`); no Cosmos connection string required in Key Vault for the current API.
 

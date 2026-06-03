@@ -17,6 +17,7 @@ locals {
     "holdings",
     "taxProfiles",
     "investmentPlans",
+    "expensePlans",
     "scenarios",
     "projectionRuns",
     "integrationTokens",

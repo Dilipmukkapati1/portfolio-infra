@@ -42,6 +42,8 @@ make apply-dev
 
 Prod promotion: `CONFIRM_PROD=1 make apply-prod` (see [docs/terraform.md](./docs/terraform.md)).
 
+**Git branches:** `develop` → CI deploys Azure dev; `main` (default) → CI deploys Azure prod after merge. See [docs/github-wiring.md](./docs/github-wiring.md).
+
 ## Downstream repos
 
 After apply, set GitHub vars from `make outputs`:

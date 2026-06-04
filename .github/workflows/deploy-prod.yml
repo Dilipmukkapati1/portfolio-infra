@@ -1,42 +1,21 @@
-name: CI
+name: Deploy prod
 
 on:
   push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-prod-infra
+  cancel-in-progress: true
 
 env:
   TF_WORKING_DIR: terraform
 
-# develop → deploy-dev.yml (Azure dev) | main → deploy-prod.yml (Azure prod)
-
 jobs:
-  validate:
+  apply-prod:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.9.0
-
-      - name: Terraform fmt
-        run: terraform fmt -check -recursive
-        working-directory: ${{ env.TF_WORKING_DIR }}
-
-      - name: Terraform init (no backend)
-        run: terraform init -backend=false
-        working-directory: ${{ env.TF_WORKING_DIR }}
-
-      - name: Terraform validate
-        run: terraform validate
-        working-directory: ${{ env.TF_WORKING_DIR }}
-
-  plan:
-    if: github.event_name != 'pull_request'
-    needs: validate
-    runs-on: ubuntu-latest
+    environment: prod
     steps:
       - uses: actions/checkout@v4
 
@@ -48,6 +27,10 @@ jobs:
         with:
           terraform_version: 1.9.0
 
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
       - name: Terraform init
         run: |
           terraform init \
@@ -57,8 +40,20 @@ jobs:
             -backend-config="key=portfolio.tfstate"
         working-directory: ${{ env.TF_WORKING_DIR }}
 
-      - name: Terraform plan
-        run: terraform plan -input=false
+      - name: Terraform validate
+        run: terraform validate
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Terraform apply prod stack
+        run: |
+          terraform apply -auto-approve -input=false \
+            -target=azurerm_resource_group.portfolio \
+            -target=module.cosmos_shared \
+            -target=module.sql_shared \
+            -target=module.storage_shared \
+            -target=module.keyvault_shared \
+            -target=module.monitoring_shared \
+            -target='module.env_stack["prod"]'
         working-directory: ${{ env.TF_WORKING_DIR }}
         env:
           TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}

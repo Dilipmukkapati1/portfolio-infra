@@ -71,6 +71,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
     AZURE_SQL_DATABASE                    = var.sql_database_name
     AZURE_SQL_CONNECTION_STRING           = "@Microsoft.KeyVault(SecretUri=https://${var.key_vault_name}.vault.azure.net/secrets/${var.environment}-azure-sql-connection-string)"
     APP_ENV                               = var.environment == "prod" ? "production" : "development"
+    DEFAULT_HOUSEHOLD_ID                  = var.environment == "prod" ? "prod-household" : "dev-household"
     AUTH_PASSWORD                         = "@Microsoft.KeyVault(SecretUri=https://${var.key_vault_name}.vault.azure.net/secrets/${var.environment}-auth-password)"
     AUTH_SECRET                           = "@Microsoft.KeyVault(SecretUri=https://${var.key_vault_name}.vault.azure.net/secrets/${var.environment}-auth-secret)"
     PRIVACY_JWT_SECRET                    = "@Microsoft.KeyVault(SecretUri=https://${var.key_vault_name}.vault.azure.net/secrets/${var.environment}-privacy-jwt-secret)"

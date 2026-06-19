@@ -25,6 +25,8 @@ Terraform grants each Function App managed identity **Key Vault Secrets Officer*
 | `prod-privacy-jwt-secret` | prod | Privacy unlock | Strong signing secret for `x-privacy-token` JWTs |
 | `dev-fmp-api-key` | dev | Market data | Financial Modeling Prep API key (`FMP_API_KEY`) |
 | `prod-fmp-api-key` | prod | Market data | Same for prod |
+| `dev-openrouter-api-key` | dev | Tax Advisor | OpenRouter API key (`OPENROUTER_API_KEY`) |
+| `prod-openrouter-api-key` | prod | Tax Advisor | Same for prod |
 
 Cosmos uses **RBAC + app settings** (`COSMOS_ENDPOINT`, `COSMOS_DATABASE`); no Cosmos connection string required in Key Vault for the current API.
 
@@ -66,6 +68,25 @@ az keyvault secret set --vault-name "$VAULT" --name dev-privacy-jwt-secret --val
 After updating secrets, apply the dev stack so the Function App settings include
 the Key Vault references, then deploy `portfolio-api` from the shared privacy
 branch.
+
+## Seed OpenRouter (Tax Advisor)
+
+Create a key at [openrouter.ai/keys](https://openrouter.ai/keys), then:
+
+```bash
+VAULT=$(cd terraform && terraform output -raw key_vault_name)
+
+az keyvault secret set --vault-name "$VAULT" --name dev-openrouter-api-key --value "<your OpenRouter API key>"
+```
+
+Apply dev so the Function App gets the `OPENROUTER_API_KEY` Key Vault reference:
+
+```bash
+make apply-dev
+```
+
+No API redeploy is required for the setting alone; restart the Function App if
+advisor chat still returns 503 after apply.
 
 ## Local development
 

@@ -18,6 +18,7 @@ locals {
     "taxProfiles",
     "investmentPlans",
     "expensePlans",
+    "advisorConversations",
     "scenarios",
     "projectionRuns",
     "integrationTokens",

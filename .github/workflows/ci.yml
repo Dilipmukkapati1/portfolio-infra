@@ -2,14 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 env:
   TF_WORKING_DIR: terraform
 
-# develop → deploy-dev.yml (Azure dev) | main → deploy-prod.yml (Azure prod)
 
 jobs:
   validate:
